@@ -1,4 +1,4 @@
-const {Word} = require('./models')
+const {Word} = require('../../lib/models')
 const {join} = require('path')
 const fs = require('fs')
 const {promisify} = require('util')
@@ -10,7 +10,7 @@ const parser = new Parser({
 })
 const parseXml = promisify(parser.parseString.bind(parser))
 
-const HEBREW_STRONG_PATH = join(__dirname, '../ext/HebrewLexicon/HebrewStrong.xml')
+const HEBREW_STRONG_PATH = join(__dirname, '../../ext/HebrewLexicon/HebrewStrong.xml')
 
 class EntriesAccesor {
   constructor (entries) {
@@ -34,7 +34,7 @@ class EntriesAccesor {
   }
 }
 
-async function sync () {
+async function prepareWordModel () {
   await Word.sync()
 
   const hebrewStrongXml = await readFileAsync(HEBREW_STRONG_PATH)
@@ -51,7 +51,7 @@ async function sync () {
 }
 
 if (!module.parent) {
-  sync().catch(console.error)
+  prepareWordModel().catch(console.error)
 }
 
-module.exports = sync
+module.exports = prepareWordModel
