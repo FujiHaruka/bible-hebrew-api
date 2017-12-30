@@ -1,0 +1,20 @@
+{
+  "name": "bible-hebrew-api",
+  "version": "1.0.0",
+  "main": "lib",
+  "scripts": {
+    "coz": "coz render lib/**/.*.bud"
+  },
+  "repository": "git@github.com:FujiHaruka/bible-hebrew-api.git",
+  "author": "FujiHaruka",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "asleep": "^1.0.3",
+    "coz": "^6.0.20",
+    "sequelize": "^4.28.6",
+    "sqlite3": "^3.1.13",
+    "the-templates": "^2.1.2",
+    "xml2js": "^0.4.19"
+  }
+}
