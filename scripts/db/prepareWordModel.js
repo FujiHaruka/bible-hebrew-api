@@ -1,6 +1,7 @@
 const {HebrewWord} = require('../../lib/models')
 const {join} = require('path')
 const fs = require('fs')
+const R = require('ramda')
 const {promisify} = require('util')
 const readFileAsync = promisify(fs.readFile)
 const {Parser} = require('xml2js')
@@ -9,9 +10,8 @@ const parser = new Parser({
   mergeAttrs: true
 })
 const parseXml = promisify(parser.parseString.bind(parser))
-const hebrewJa = require('../../assets/strong_hebrew_ja')
-  .map(({id, ja}) => ({[id]: ja}))
-  .reduce((obj, kv) => Object.assign(obj, kv), {})
+const byId = R.indexBy(R.prop('id'))
+const hebrewJa = byId(require('../../assets/strong_hebrew_ja'))
 
 const HEBREW_STRONG_PATH = join(__dirname, '../../ext/HebrewLexicon/HebrewStrong.xml')
 
@@ -62,7 +62,11 @@ class EntriesAccesor {
   }
 }
 
-async function prepareWordModel () {
+async function prepareWordModel ({force = false}) {
+  if (force) {
+    await HebrewWord.sync()
+    await HebrewWord.drop()
+  }
   await HebrewWord.sync()
 
   const alreadyCreated = await HebrewWord.findOne()
