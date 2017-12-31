@@ -1,7 +1,8 @@
 const assert = require('assert')
 const {
   findVerse,
-  findHebrewDefinitions
+  findHebrewDefinitions,
+  findVersesUsingWord
 } = require('../lib/domain')
 
 describe('domain.js', function () {
@@ -24,6 +25,11 @@ describe('domain.js', function () {
       const defs = await findHebrewDefinitions(strongNums)
       assert.ok(defs['H1254'])
     }
+  })
+
+  it('findVersesUsingWord', async () => {
+    const verseIds = await findVersesUsingWord('H934')
+    assert.ok(verseIds.length > 0)
   })
 })
 
