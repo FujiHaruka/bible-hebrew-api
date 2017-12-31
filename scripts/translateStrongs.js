@@ -53,12 +53,12 @@ async function translateStrongs (destPath = STRONG_HEBREW_JA_PATH) {
     console.error(e.body)
     return
   }
-  console.log(translations)
   const jaDefs = translations
     .map(prop('translatedText'))
     .map((ja, i) => ({
       id: wordIds[i],
-      ja
+      ja,
+      en: enDefs[i]
     }))
   await writeFileAsync(destPath, JSON.stringify(jaDefs, null, '  '))
 }
