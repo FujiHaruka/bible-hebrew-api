@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "lib",
   "scripts": {
-    "coz": "coz render lib/**/.*.bud"
+    "start": "node lib/app.js"
   },
   "repository": "git@github.com:FujiHaruka/bible-hebrew-api.git",
   "author": "FujiHaruka",
@@ -12,7 +12,6 @@
   "dependencies": {
     "@koa/cors": "2",
     "asleep": "^1.0.3",
-    "coz": "^6.0.20",
     "google-translate": "^2.0.5",
     "koa": "^2.4.1",
     "koa-logger": "^3.1.0",
@@ -20,7 +19,6 @@
     "ramda": "^0.25.0",
     "sequelize": "^4.28.6",
     "sqlite3": "^3.1.13",
-    "the-templates": "^2.1.2",
     "xml-js": "^1.6.1",
     "xml2js": "^0.4.19"
   }
