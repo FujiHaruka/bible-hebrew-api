@@ -4,12 +4,7 @@ const fs = require('fs')
 const R = require('ramda')
 const {promisify} = require('util')
 const readFileAsync = promisify(fs.readFile)
-const {Parser} = require('xml2js')
-const parser = new Parser({
-  explicitArray: false,
-  mergeAttrs: true
-})
-const parseXml = promisify(parser.parseString.bind(parser))
+const parseXml = require('../../lib/helpers/parseXml')
 const byId = R.indexBy(R.prop('id'))
 const hebrewJa = byId(require('../../assets/strong_hebrew_ja'))
 
