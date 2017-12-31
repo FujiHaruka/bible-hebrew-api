@@ -1,4 +1,4 @@
-const {Word} = require('../../lib/models')
+const {HebrewWord} = require('../../lib/models')
 const {join} = require('path')
 const fs = require('fs')
 const {promisify} = require('util')
@@ -14,40 +14,65 @@ const HEBREW_STRONG_PATH = join(__dirname, '../../ext/HebrewLexicon/HebrewStrong
 
 class EntriesAccesor {
   constructor (entries) {
+    this.toWord = this.toWord.bind(this)
     this.entries = entries
   }
 
   defOf (entry) {
     let defs
-    if (entry.meaning) {
+    if (entry.meaning && entry.meaning.def) {
       defs = entry.meaning.def
     } else {
-      // corresponding to other word
-      const corresponding = entry.source.w
-      const refId = Array.isArray(corresponding)
-        ? corresponding.find(({src}) => Boolean(src)).src
-        : corresponding.src
-      const refEntry = this.entries.find(({id}) => id === refId)
-      defs = refEntry.meaning.def
+      if (entry.source.w) {
+        // corresponding to other word
+        const corresponding = entry.source.w
+        const refId = Array.isArray(corresponding)
+          ? corresponding.find(({src}) => Boolean(src)).src
+          : corresponding.src
+        const refEntry = this.getEntry(refId)
+        defs = this.defOf(refEntry)
+      } else {
+        console.error('ここは来ないはず')
+      }
     }
     return Array.isArray(defs) ? defs.join(', ') : defs
+  }
+
+  toWord (entry) {
+    const def = this.defOf(entry)
+    return {
+      id: entry.id,
+      lemma: entry.w._,
+      pron: entry.w.pron,
+      def
+    }
+  }
+
+  getEntry (id) {
+    return this.entries.find((entry) => entry.id === id)
   }
 }
 
 async function prepareWordModel () {
-  await Word.sync()
+  await HebrewWord.sync()
+
+  const alreadyCreated = await HebrewWord.findOne()
+  if (alreadyCreated) {
+    console.log('Skip creating hebrew_word')
+    return
+  }
 
   const hebrewStrongXml = await readFileAsync(HEBREW_STRONG_PATH)
   const hebrewStrong = await parseXml(hebrewStrongXml)
   const entries = hebrewStrong.lexicon.entry
   const entriesAccesor = new EntriesAccesor(entries)
-  const words = entries.map((entry) => ({
-    id: entry.id,
-    lemma: entry.w._,
-    pron: entry.w.pron,
-    def: entriesAccesor.defOf(entry)
-  }))
-  await Word.bulkCreate(words)
+  const words = entries.map(entriesAccesor.toWord)
+  try {
+    await HebrewWord.bulkCreate(words)
+  } catch (e) {
+    // エラーをそのまま表示すると SQL 文が長くて大変なことになるため
+    console.error(e.message)
+  }
 }
 
 if (!module.parent) {
