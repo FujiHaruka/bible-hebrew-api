@@ -9,6 +9,9 @@ const parser = new Parser({
   mergeAttrs: true
 })
 const parseXml = promisify(parser.parseString.bind(parser))
+const hebrewJa = require('../../assets/strong_hebrew_ja')
+  .map(({id, ja}) => ({[id]: ja}))
+  .reduce((obj, kv) => Object.assign(obj, kv), {})
 
 const HEBREW_STRONG_PATH = join(__dirname, '../../ext/HebrewLexicon/HebrewStrong.xml')
 
@@ -39,12 +42,18 @@ class EntriesAccesor {
   }
 
   toWord (entry) {
+    const {id} = entry
     const def = this.defOf(entry)
+    const ja = hebrewJa[id]
+    if (!ja) {
+      throw new Error(`no ja ${ja} ${entry}`)
+    }
     return {
-      id: entry.id,
+      id,
       lemma: entry.w._,
       pron: entry.w.pron,
-      def
+      def,
+      ja
     }
   }
 
