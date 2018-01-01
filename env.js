@@ -12,4 +12,9 @@ let defaultEnv = {
   URL_PREFIX: '' // for example '/api'
 }
 
-module.exports = BIBLE_HEBREW_API_ENV_PATH ? require(BIBLE_HEBREW_API_ENV_PATH) : defaultEnv
+if (BIBLE_HEBREW_API_ENV_PATH) {
+  console.log(`Use custom env: ${BIBLE_HEBREW_API_ENV_PATH}`)
+  module.exports = require(BIBLE_HEBREW_API_ENV_PATH)
+} else {
+  module.exports = defaultEnv
+}

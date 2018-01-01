@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "lib",
   "scripts": {
-    "start": "node lib/app.js"
+    "start": "node lib/app.js",
+    "prod": "pm2 start --name bible-hebrew-api lib/app.js"
   },
   "repository": "git@github.com:FujiHaruka/bible-hebrew-api.git",
   "author": "FujiHaruka",
