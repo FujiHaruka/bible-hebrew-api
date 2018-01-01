@@ -39,7 +39,7 @@ class EntriesAccesor {
   toWord (entry) {
     const {id} = entry
     const def = this.defOf(entry)
-    const ja = hebrewJa[id]
+    const {ja} = hebrewJa[id]
     if (!ja) {
       throw new Error(`no ja ${ja} ${entry}`)
     }
