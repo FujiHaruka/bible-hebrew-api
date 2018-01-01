@@ -84,7 +84,7 @@ async function prepareWordModel ({force = false}) {
 }
 
 if (!module.parent) {
-  prepareWordModel().catch(console.error)
+  prepareWordModel({force: true}).catch(console.error)
 }
 
 module.exports = prepareWordModel
